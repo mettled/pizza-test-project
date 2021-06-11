@@ -48,6 +48,11 @@
           border-radius: 5px;
           cursor: auto;
         }
+        &.disable {
+          cursor: none;
+          pointer-events: none;
+          opacity: 0.3;
+        }
       }
     }
   }

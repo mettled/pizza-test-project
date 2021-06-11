@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import cl from 'classnames';
 
-const sorting = ['популярности', 'цене', 'алфавиту'];
+const sorting = [
+  { name: 'популярности', type: 'popular' },
+  { name: 'цене', type: 'price' },
+  { name: 'алфавиту', type: 'alphbet' },
+];
 
 function SortPopup() {
   const [visiblePopup, setVisiblePopup] = useState(false);
@@ -21,7 +25,6 @@ function SortPopup() {
   const onClickChangeSort = (index) => {
     changeSort(index);
     setVisiblePopup(false);
-    console.log(currentSort);
   };
 
   useEffect(() => {
@@ -47,17 +50,17 @@ function SortPopup() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => onClickSort()}>{sorting[currentSort]}</span>
+        <span onClick={() => onClickSort()}>{sorting[currentSort].name}</span>
       </div>
       {visiblePopup && (
         <div className="sort__popup">
           <ul>
             {sorting.map((item, index) => (
               <li
-                key={item + '_' + index}
+                key={item.type + '_' + index}
                 onClick={() => onClickChangeSort(index)}
-                className={cl({ active: currentSort == index }) || null}>
-                {item}
+                className={cl({ active: currentSort === index }) || null}>
+                {item.name}
               </li>
             ))}
           </ul>
