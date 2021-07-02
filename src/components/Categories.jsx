@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cl from 'classnames';
 
-function Categories({ items }) {
-  const [activeItem, setActiveItem] = useState(0);
+const items = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
+const Categories = React.memo(function Categories({ onSelectCategory, selectedCategory }) {
   return (
     <div className="categories">
       <ul>
         {items.length > 0 &&
           items.map((item, index) => (
             <li
-              onClick={() => setActiveItem(index)}
-              className={cl({ active: activeItem === index }) || null}
+              onClick={() => onSelectCategory(index)}
+              className={cl({ active: selectedCategory === index }) || null}
               key={item + '_' + index}>
               {item}
             </li>
@@ -19,6 +19,6 @@ function Categories({ items }) {
       </ul>
     </div>
   );
-}
+});
 
 export default Categories;

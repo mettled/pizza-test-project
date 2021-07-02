@@ -1,49 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import cl from 'classnames';
+import Button from './Button';
 
-const availableTypes = ['тонкое', 'традиционное'];
-const availableSizes = [26, 30, 40];
+const AVALIBLE_TYPES = ['тонкое', 'традиционное'];
+const AVALIBLE_SIZES = [26, 30, 40];
 
-function PizzaBlock({ imageUrl, name, price, sizes, types: idTypes }) {
-  const [actualSize, setActualSize] = useState(sizes[0]);
-  const [actualType, setActualType] = useState(idTypes[0]);
+const PizzaBlock = React.memo(function PizzaBlock({
+  id,
+  imageUrl,
+  name,
+  price,
+  sizes,
+  types,
+  onAddPizzaToCart,
+  countPizzaInCart = 0,
+}) {
+  const [selectedSize, selectSize] = React.useState(sizes[0]);
+  const [selectedType, selectType] = React.useState(types[0]);
 
-  const onSetActualType = (index) => {
-    setActualType(index);
+  const onSelectType = (index) => {
+    selectType(index);
   };
-  const onSetActualSize = (index) => {
-    setActualSize(index);
+  const onSelectSize = (index) => {
+    selectSize(index);
   };
+
   return (
     <div className="pizza-block">
       <img className="pizza-block__image" src={imageUrl} alt={name} />
       <h4 className="pizza-block__title">{name}</h4>
       <div className="pizza-block__selector">
         <ul>
-          {availableTypes.map((type, index) => {
+          {AVALIBLE_TYPES.map((type) => {
             return (
               <li
                 className={cl({
-                  active: actualType === index,
-                  disable: !idTypes.includes(index),
+                  active: selectedType === type,
+                  disable: !types.includes(type),
                 })}
-                onClick={() => onSetActualType(index)}
-                key={type + '_' + index}>
+                onClick={() => onSelectType(type)}
+                key={name + '_' + type}>
                 {type}
               </li>
             );
           })}
         </ul>
         <ul>
-          {availableSizes.map((size) => {
+          {AVALIBLE_SIZES.map((size) => {
             return (
               <li
                 className={cl({
-                  active: actualSize === size,
+                  active: selectedSize === size,
                   disable: !sizes.includes(size),
                 })}
-                onClick={() => onSetActualSize(size)}
+                onClick={() => onSelectSize(size)}
                 key={name + '_' + size}>
                 {size} см.
               </li>
@@ -53,7 +64,10 @@ function PizzaBlock({ imageUrl, name, price, sizes, types: idTypes }) {
       </div>
       <div className="pizza-block__bottom">
         <div className="pizza-block__price">{price} ₽</div>
-        <div className="button button--outline button--add">
+        <Button
+          onClick={() => onAddPizzaToCart({ id, price, size: selectedSize, type: selectedType })}
+          className="button--add"
+          outline>
           <svg
             width="12"
             height="12"
@@ -66,12 +80,12 @@ function PizzaBlock({ imageUrl, name, price, sizes, types: idTypes }) {
             />
           </svg>
           <span>Добавить</span>
-          <i>2</i>
-        </div>
+          <i>{countPizzaInCart}</i>
+        </Button>
       </div>
     </div>
   );
-}
+});
 
 PizzaBlock.propTypes = {
   imageUrl: PropTypes.string,
@@ -79,6 +93,14 @@ PizzaBlock.propTypes = {
   price: PropTypes.number,
   sizes: PropTypes.arrayOf(PropTypes.number),
   types: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])),
+};
+
+PizzaBlock.default = {
+  imageUrl: '',
+  name: '',
+  price: 0,
+  sizes: AVALIBLE_SIZES[0],
+  types: AVALIBLE_TYPES[0],
 };
 
 export default PizzaBlock;

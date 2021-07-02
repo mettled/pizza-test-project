@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import pizzaLogo from '../assets/img/pizza-logo.svg';
-import Button from './Button';
+import Button from '../components/Button';
 
-const onClickHandler = (a) => {
-  console.log(a);
-};
+const Header = React.memo(function Header() {
+  const { totalCartPrice, totalCartCount } = useSelector((state) => ({
+    totalCartPrice: state.cart?.totalCartPrice,
+    totalCartCount: state.cart?.totalCartCount,
+  }));
 
-function Header() {
   return (
     <div className="header">
       <div className="container">
@@ -22,8 +24,8 @@ function Header() {
         </Link>
         <Link to="/cart">
           <div className="header__cart">
-            <Button onClick={onClickHandler} className="button--cart">
-              <span>520 ₽</span>
+            <Button className="button--cart">
+              <span>{totalCartPrice} ₽</span>
               <div className="button__delimiter"></div>
               <svg
                 width="18"
@@ -53,16 +55,13 @@ function Header() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>3</span>
+              <span>{totalCartCount}</span>
             </Button>
-            {/* <a href="/cart.html" className="button button--cart">
-          
-          </a> */}
           </div>
         </Link>
       </div>
     </div>
   );
-}
+});
 
 export default Header;

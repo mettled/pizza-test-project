@@ -2,16 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import cl from 'classnames';
 
 const sorting = [
-  { name: 'популярности', type: 'popular' },
+  { name: 'популярности', type: 'rating' },
   { name: 'цене', type: 'price' },
-  { name: 'алфавиту', type: 'alphbet' },
+  { name: 'алфавиту', type: 'name' },
 ];
 
-function SortPopup() {
+const SortingPizza = React.memo(function SortingPizza({ onSelectSort, selectedSortBy }) {
   const [visiblePopup, setVisiblePopup] = useState(false);
-  const [currentSort, changeSort] = useState(0);
   const refSort = useRef(false);
-  const onClickSort = () => {
+
+  const onVisiblePopup = () => {
     setVisiblePopup(!visiblePopup);
   };
 
@@ -22,17 +22,17 @@ function SortPopup() {
     }
   };
 
-  const onClickChangeSort = (index) => {
-    changeSort(index);
-    setVisiblePopup(false);
-  };
-
   useEffect(() => {
     document.addEventListener('click', onClickHandlerBody);
     return () => {
       document.removeEventListener('click', onClickHandlerBody);
     };
   }, []);
+
+  useEffect(() => {
+    setVisiblePopup(false);
+  }, [selectedSortBy]);
+  console.log('sorting', sorting, selectedSortBy);
 
   return (
     <div className="sort" ref={refSort}>
@@ -50,17 +50,19 @@ function SortPopup() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => onClickSort()}>{sorting[currentSort].name}</span>
+        <span onClick={() => onVisiblePopup()}>
+          {sorting.find((item) => item.type === selectedSortBy)?.name}
+        </span>
       </div>
       {visiblePopup && (
         <div className="sort__popup">
           <ul>
-            {sorting.map((item, index) => (
+            {sorting.map(({ name, type }, index) => (
               <li
-                key={item.type + '_' + index}
-                onClick={() => onClickChangeSort(index)}
-                className={cl({ active: currentSort === index }) || null}>
-                {item.name}
+                key={type + '_' + index}
+                onClick={() => onSelectSort(type)}
+                className={cl({ active: selectedSortBy === type }) || null}>
+                {name}
               </li>
             ))}
           </ul>
@@ -68,6 +70,6 @@ function SortPopup() {
       )}
     </div>
   );
-}
+});
 
-export default SortPopup;
+export default SortingPizza;
